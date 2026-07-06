@@ -1,0 +1,15 @@
+client/node_modules
+server/node_modules
+
+client/dist
+server/dist
+
+.env
+server/.env
+client/.env
+
+.DS_Store
+
+# Uploads (keep folder, ignore contents)
+server/uploads/*
+!server/uploads/.gitkeep

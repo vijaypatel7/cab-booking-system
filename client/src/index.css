@@ -1,0 +1,766 @@
+/* ============================================
+   RideNow - Cab Booking App Global Styles
+   ============================================ */
+
+/* ===== Light Mode (default) ===== */
+:root {
+  --primary: #6366f1;
+  --primary-dark: #4f46e5;
+  --primary-light: #eef2ff;
+
+  --gray-50: #f9fafb;
+  --gray-100: #f3f4f6;
+  --gray-200: #e5e7eb;
+  --gray-300: #d1d5db;
+  --gray-400: #9ca3af;
+  --gray-500: #6b7280;
+  --gray-600: #4b5563;
+  --gray-700: #374151;
+  --gray-800: #1f2937;
+  --gray-900: #111827;
+
+  --success: #22c55e;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+
+  /* Semantic tokens */
+  --bg: #fafbfc;
+  --surface: #ffffff;
+  --surface-muted: #f9fafb;
+  --border: #f3f4f6;
+  --text-primary: #111827;
+  --text-secondary: #4b5563;
+  --text-muted: #9ca3af;
+  --toggle-off: #e5e7eb;
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 6px rgba(0,0,0,0.07);
+  --shadow-lg: 0 10px 15px rgba(0,0,0,0.1);
+}
+
+/* ===== Dark Mode ===== */
+.dark {
+  --primary: #818cf8;
+  --primary-dark: #6366f1;
+  --primary-light: #1e1b4b;
+
+  --gray-50: #1e1e2e;
+  --gray-100: #2a2a3c;
+  --gray-200: #363650;
+  --gray-300: #4a4a66;
+  --gray-400: #6b6b8a;
+  --gray-500: #8b8baa;
+  --gray-600: #a5a5c0;
+  --gray-700: #c4c4d8;
+  --gray-800: #e0e0ee;
+  --gray-900: #f0f0f8;
+
+  --success: #34d399;
+  --warning: #fbbf24;
+  --danger: #f87171;
+
+  /* Semantic tokens */
+  --bg: #0f0f1a;
+  --surface: #1a1a2e;
+  --surface-muted: #16162a;
+  --border: #2a2a3c;
+  --text-primary: #f0f0f8;
+  --text-secondary: #a5a5c0;
+  --text-muted: #6b6b8a;
+  --toggle-off: #363650;
+
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.3);
+  --shadow-md: 0 4px 6px rgba(0,0,0,0.4);
+  --shadow-lg: 0 10px 15px rgba(0,0,0,0.5);
+}
+
+/* ===== Reset ===== */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--bg);
+  color: var(--text-primary);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+button {
+  cursor: pointer;
+  font-family: inherit;
+}
+
+/* ========= Layout ========= */
+.app-layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-body {
+  display: flex;
+  flex: 1;
+}
+
+.app-main {
+  flex: 1;
+  min-width: 0;
+}
+
+/* ========= Buttons ========= */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.25rem;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  font-size: 0.9rem;
+  border: 2px solid transparent;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: white;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+.btn-primary:hover {
+  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+  transform: translateY(-1px);
+}
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--text-secondary);
+  border-color: var(--border);
+}
+.btn-outline:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+  background: var(--primary-light);
+}
+
+.btn-danger-outline {
+  background: transparent;
+  color: #ef4444;
+  border-color: #fecaca;
+}
+.btn-danger-outline:hover {
+  background: #fee2e2;
+  border-color: #ef4444;
+}
+
+.dark .btn-danger-outline {
+  color: #f87171;
+  border-color: #7f1d1d;
+}
+.dark .btn-danger-outline:hover {
+  background: #450a0a;
+  border-color: #f87171;
+}
+
+.btn-lg {
+  padding: 0.8rem 1.75rem;
+  font-size: 1rem;
+  border-radius: var(--radius-lg);
+}
+
+.btn-sm {
+  padding: 0.4rem 0.8rem;
+  font-size: 0.8rem;
+  border-radius: var(--radius-sm);
+}
+
+.btn-full {
+  width: 100%;
+}
+
+/* ========= Scrollbar ========= */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--gray-300);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--gray-400);
+}
+
+/* ========= Selection ========= */
+::selection {
+  background: var(--primary-light);
+  color: var(--primary);
+}
+
+/* ========= Animations ========= */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ========= Global Dark Mode Overrides ========= */
+
+/* Dark body already handled via CSS variables on body background */
+
+/* Cards & containers that used hardcoded white */
+.dark .navbar {
+  background: rgba(26, 26, 46, 0.95);
+  border-bottom-color: var(--border);
+}
+
+.dark .sidebar {
+  background: var(--surface);
+  border-right-color: var(--border);
+}
+
+.dark .ride-card {
+  background: var(--surface);
+  border-color: var(--border);
+}
+
+.dark .auth-container {
+  background: var(--surface);
+  border-color: var(--border);
+}
+
+.dark .profile-hero {
+  background: var(--surface);
+  border-color: var(--border);
+}
+
+.dark .profile-stat-card {
+  background: var(--surface);
+  border-color: var(--border);
+}
+
+.dark .profile-details-card {
+  background: var(--surface);
+  border-color: var(--border);
+}
+
+.dark .danger-zone-card {
+  background: var(--surface);
+  border-color: #7f1d1d;
+}
+
+.dark .contact-card {
+  background: var(--surface);
+  border-color: var(--border);
+}
+
+.dark .faq-category {
+  background: var(--surface);
+  border-color: var(--border);
+}
+
+.dark .book-card {
+  background: var(--surface);
+  border-color: var(--border);
+}
+
+.dark .recent-ride-item {
+  background: var(--surface);
+  border-color: var(--border);
+}
+
+.dark .empty-state {
+  background: var(--surface);
+  border-color: var(--border);
+}
+
+.dark .stat-card {
+  background: var(--surface);
+  border-color: var(--border);
+}
+
+.dark .feature-card {
+  background: var(--surface);
+  border-color: var(--border);
+}
+
+/* Auth pages */
+.dark .input-wrapper input {
+  background: var(--surface-muted);
+  border-color: var(--border);
+  color: var(--text-primary);
+}
+.dark .input-wrapper input:focus {
+  background: var(--surface);
+  border-color: var(--primary);
+}
+
+.dark .input-icon {
+  color: var(--text-muted);
+}
+
+.dark .phone-mockup {
+  background: #2a2a3c;
+}
+
+.dark .phone-screen {
+  background: var(--surface);
+}
+
+.dark .phone-header {
+  background: var(--surface-muted);
+  color: var(--text-muted);
+}
+
+.dark .phone-map {
+  background: linear-gradient(135deg, #1e1b4b, #1e1b4b, #2a2a3c);
+}
+
+.dark .phone-ride-opt {
+  color: var(--text-secondary);
+}
+
+.dark .phone-ride-opt.selected {
+  background: var(--primary-light);
+  color: var(--primary);
+}
+
+/* Sidebar */
+.dark .sidebar-user {
+  background: var(--surface-muted);
+}
+
+.dark .sidebar-link {
+  color: var(--text-muted);
+}
+.dark .sidebar-link:hover {
+  background: var(--surface-muted);
+  color: var(--text-primary);
+}
+.dark .sidebar-link.active {
+  color: var(--primary);
+  background: var(--primary-light);
+}
+
+/* Navbar user dropdown */
+.dark .profile-dropdown {
+  background: var(--surface);
+  border-color: var(--border);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+}
+
+.dark .dropdown-item:hover {
+  background: var(--surface-muted);
+}
+
+.dark .dropdown-item.active {
+  background: var(--primary-light);
+}
+
+/* Navbar mobile */
+.dark .mobile-menu {
+  border-top-color: var(--border);
+}
+
+.dark .mobile-link {
+  color: var(--text-secondary);
+}
+.dark .mobile-link:hover,
+.dark .mobile-link.active {
+  background: var(--primary-light);
+  color: var(--primary);
+}
+
+/* Confirm details */
+.dark .confirm-details {
+  background: var(--surface-muted);
+}
+
+.dark .fare-breakdown {
+  background: var(--surface-muted);
+}
+
+/* Ride type cards */
+.dark .ride-type-card {
+  border-color: var(--border);
+}
+.dark .ride-type-card:hover {
+  border-color: var(--gray-300);
+}
+.dark .ride-type-card.selected {
+  border-color: var(--primary);
+  background: var(--primary-light);
+}
+
+/* Location inputs */
+.dark .location-input-wrap input {
+  background: var(--surface-muted);
+  border-color: var(--border);
+  color: var(--text-primary);
+}
+.dark .location-input-wrap input:focus {
+  background: var(--surface);
+  border-color: var(--primary);
+}
+
+/* Quick chips */
+.dark .quick-chip {
+  background: var(--surface-muted);
+  border-color: var(--border);
+  color: var(--text-secondary);
+}
+.dark .quick-chip:hover {
+  background: var(--primary-light);
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+/* Payment options */
+.dark .payment-opt {
+  background: var(--surface);
+  border-color: var(--border);
+  color: var(--text-secondary);
+}
+.dark .payment-opt.selected {
+  border-color: var(--primary);
+  background: var(--primary-light);
+  color: var(--primary);
+}
+
+/* Filter chips */
+.dark .filter-chip {
+  background: var(--surface);
+  border-color: var(--border);
+  color: var(--text-secondary);
+}
+.dark .filter-chip.active {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: white;
+}
+
+/* CTA section stays gradient */
+.dark .cta-section {
+  background: linear-gradient(135deg, #312e81, #4c1d95);
+}
+
+/* Footer */
+.dark .home-footer {
+  background: #080816;
+}
+
+/* Profile detail inputs */
+.dark .detail-input {
+  background: var(--surface-muted);
+  border-color: var(--border);
+  color: var(--text-primary);
+}
+.dark .detail-input:focus {
+  background: var(--surface);
+  border-color: var(--primary);
+}
+
+/* Profile avatar */
+.dark .avatar-img {
+  background: var(--surface-muted);
+}
+
+/* Rating modal */
+.dark .rating-modal {
+  background: var(--surface);
+}
+
+/* Toast dark mode */
+.dark .toast {
+  background: #2a2a3c !important;
+}
+
+/* Spinners */
+.dark .btn-loading {
+  border-color: rgba(255,255,255,0.3);
+  border-top-color: white;
+}
+
+/* Link buttons in settings */
+.dark .setting-link-btn:hover {
+  background: var(--surface-muted);
+  color: var(--text-secondary);
+}
+
+/* Book ride card */
+.dark .book-card {
+  background: var(--surface);
+  border-color: var(--border);
+}
+.dark .book-card h2 {
+  color: var(--text-primary);
+}
+.dark .book-header h1 {
+  color: var(--text-primary);
+}
+.dark .book-header p {
+  color: var(--text-muted);
+}
+.dark .step-dot {
+  background: var(--surface-muted);
+  color: var(--text-muted);
+}
+.dark .step-dot.active {
+  background: var(--primary);
+  color: white;
+}
+.dark .step-label {
+  color: var(--text-muted);
+}
+.dark .location-select {
+  background-color: var(--surface-muted);
+  border-color: var(--border);
+  color: var(--text-primary);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236b6b8a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+}
+.dark .location-select:focus {
+  background-color: var(--surface);
+  border-color: var(--primary);
+}
+.dark .location-select option {
+  background: var(--surface);
+  color: var(--text-primary);
+}
+.dark .fare-breakdown {
+  background: var(--surface-muted);
+}
+.dark .fare-breakdown h3 {
+  color: var(--text-secondary);
+}
+.dark .fare-row {
+  color: var(--text-muted);
+}
+.dark .fare-row.total {
+  border-top-color: var(--border);
+  color: var(--text-primary);
+}
+.dark .confirm-details {
+  background: var(--surface-muted);
+}
+.dark .confirm-value {
+  color: var(--text-primary) !important;
+}
+.dark .confirm-label {
+  color: var(--text-muted) !important;
+}
+.dark .confirm-row {
+  color: var(--text-secondary);
+}
+.dark .confirm-row.total-fare {
+  color: var(--primary);
+}
+.dark .payment-section h3 {
+  color: var(--text-primary);
+}
+.dark .ride-type-name {
+  color: var(--text-primary);
+}
+.dark .ride-type-desc {
+  color: var(--text-muted);
+}
+.dark .fare-amount {
+  color: var(--text-primary);
+}
+.dark .ride-type-card {
+  border-color: var(--border);
+  background: var(--surface);
+}
+.dark .ride-type-card.selected {
+  background: var(--primary-light);
+  border-color: var(--primary);
+}
+
+/* Auth pages dark mode */
+.dark .auth-container {
+  background: var(--surface);
+  border-color: var(--border);
+}
+.dark .auth-header h1 {
+  color: var(--text-primary);
+}
+.dark .auth-header p {
+  color: var(--text-muted);
+}
+.dark .form-group label {
+  color: var(--text-secondary);
+}
+.dark .input-wrapper input {
+  background: var(--surface-muted);
+  border-color: var(--border);
+  color: var(--text-primary);
+}
+.dark .input-wrapper input:focus {
+  background: var(--surface);
+  border-color: var(--primary);
+}
+.dark .auth-footer p {
+  color: var(--text-muted);
+}
+
+/* Dashboard dark mode fixes */
+.dark .dashboard-header h1 {
+  color: var(--text-primary);
+}
+.dark .dashboard-header p {
+  color: var(--text-muted);
+}
+.dark .stat-card {
+  background: var(--surface);
+  border-color: var(--border);
+}
+.dark .stat-card-label {
+  color: var(--text-muted);
+}
+.dark .section-header-row h2 {
+  color: var(--text-primary);
+}
+.dark .recent-ride-route {
+  color: var(--text-secondary);
+}
+.dark .ride-fare {
+  color: var(--text-primary);
+}
+
+/* Ride card dark mode */
+.dark .ride-card {
+  background: var(--surface);
+  border-color: var(--border);
+}
+.dark .ride-type-badge {
+  color: var(--text-secondary);
+}
+.dark .route-address {
+  color: var(--text-primary);
+}
+
+/* History page dark mode */
+.dark .history-header h1 {
+  color: var(--text-primary);
+}
+.dark .history-header p {
+  color: var(--text-muted);
+}
+
+/* Profile dark mode fixes */
+.dark .profile-hero-info h1 {
+  color: var(--text-primary);
+}
+.dark .profile-email {
+  color: var(--text-muted);
+}
+.dark .badge-date {
+  background: var(--surface-muted);
+  color: var(--text-muted);
+}
+.dark .details-header h2 {
+  color: var(--text-primary);
+}
+.dark .detail-value {
+  color: var(--text-primary);
+}
+.dark .detail-item label {
+  color: var(--text-muted);
+}
+
+/* Help page dark mode */
+.dark .help-header h1 {
+  color: var(--text-primary);
+}
+.dark .help-header p {
+  color: var(--text-muted);
+}
+.dark .contact-label {
+  color: var(--text-primary);
+}
+.dark .faq-category-btn {
+  color: var(--text-secondary);
+}
+.dark .faq-section h2 {
+  color: var(--text-primary);
+}
+.dark .faq-q {
+  color: var(--text-secondary);
+}
+.dark .faq-a p {
+  color: var(--text-muted);
+}
+
+/* Home page dark mode fixes */
+.dark .hero-title {
+  color: var(--text-primary);
+}
+.dark .hero-subtitle {
+  color: var(--text-muted);
+}
+.dark .section-title {
+  color: var(--text-primary);
+}
+.dark .stat-number {
+  color: var(--text-primary);
+}
+.dark .feature-card h3 {
+  color: var(--text-primary);
+}
+.dark .feature-card p {
+  color: var(--text-muted);
+}
+
+/* General dark mode color fixes */
+.dark .gray-800-text,
+.dark [style*="color: var(--gray-800)"] {
+  color: var(--text-primary) !important;
+}

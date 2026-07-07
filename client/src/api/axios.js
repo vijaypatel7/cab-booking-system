@@ -1,12 +1,12 @@
 import axios from 'axios';
 
 const API = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || '/api',
+  baseURL:'/api',
   headers: {
     'Content-Type': 'application/json',
   },
   timeout: 15000,
-});
+}); 
 
 // Request interceptor — attach token
 API.interceptors.request.use(

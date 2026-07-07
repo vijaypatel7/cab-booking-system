@@ -1,0 +1,34 @@
+services:
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: ${BACKEND_CONTAINER_NAME}
+    ports:
+      - "${BACKEND_HOST_PORT}:${BACKEND_PORT}"
+    restart: unless-stopped
+    environment:
+      PORT: ${BACKEND_PORT}
+      NODE_ENV: ${NODE_ENV}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRE: ${JWT_EXPIRE}
+      MONGO_URI: ${MONGO_URI}
+      
+    networks:
+        - cab-booking-network
+
+  client:
+    build:
+      context: ./
+      dockerfile: ./client/Dockerfile
+    container_name: ${FRONTEND_CONTAINER_NAME}
+    ports:
+      - "${FRONTEND_HOST_PORT}:${FRONTEND_PORT}"
+    restart: unless-stopped
+    networks:
+      - cab-booking-network
+    depends_on:
+      - server
+networks:
+  cab-booking-network:
+    driver: bridge

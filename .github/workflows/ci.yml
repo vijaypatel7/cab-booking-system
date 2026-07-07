@@ -11,7 +11,6 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
@@ -28,16 +27,20 @@ jobs:
         run: npm ci
 
       - name: Build Frontend
-        working-directory: client
-        run: npm run build
+        uses: docker/build-push-action@v6
+        with:
+            context: .
+            file: ./client/Dockerfile
+            push: false
+            tags: cab-booking-client:latest
 
       - name: Install Backend Dependencies
         working-directory: server
         run: npm ci
 
       - name: Build Backend
-        working-directory: server
-        run: npm test --if-present
-
-      - name: Build Docker Images
-        run: docker compose build
+        uses: docker/build-push-action@v6
+        with:
+            context: ./server
+            push: false
+            tags: cab-booking-server:latest

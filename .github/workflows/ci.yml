@@ -39,7 +39,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
             context: .
-            file: ./client/Dockerfile
+            file: ./client
             push: true
             tags: |
                 ${{ secrets.DOCKER_USERNAME }}/cab-booking-client:latest

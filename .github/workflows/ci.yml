@@ -38,8 +38,7 @@ jobs:
       - name: Build and Push Frontend
         uses: docker/build-push-action@v6
         with:
-            context: .
-            file: ./client
+            context: ./client
             push: true
             tags: |
                 ${{ secrets.DOCKER_USERNAME }}/cab-booking-client:latest

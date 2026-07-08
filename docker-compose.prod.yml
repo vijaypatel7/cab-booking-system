@@ -1,0 +1,40 @@
+services:
+  server:
+    image: ${DOCKER_USERNAME}/cab-booking-server:${IMAGE_TAG}
+
+    container_name: ${BACKEND_CONTAINER_NAME}
+
+    restart: unless-stopped
+
+    ports:
+      - "${BACKEND_HOST_PORT}:${BACKEND_PORT}"
+
+    environment:
+      PORT: ${BACKEND_PORT}
+      NODE_ENV: ${NODE_ENV}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRE: ${JWT_EXPIRE}
+      MONGO_URI: ${MONGO_URI}
+
+    networks:
+      - cab-booking-network
+
+  client:
+    image: ${DOCKER_USERNAME}/cab-booking-client:${IMAGE_TAG}
+
+    container_name: ${FRONTEND_CONTAINER_NAME}
+
+    restart: unless-stopped
+
+    ports:
+      - "${FRONTEND_HOST_PORT}:${FRONTEND_PORT}"
+
+    depends_on:
+      - server
+
+    networks:
+      - cab-booking-network
+
+networks:
+  cab-booking-network:
+    driver: bridge

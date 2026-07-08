@@ -50,7 +50,7 @@ const Home = () => {
           <motion.h1 className="hero-title" variants={fadeInUp}>
             Your Ride,
             <br />
-            <span className="gradient-text">Your Way.</span>
+            <span className="gradient-text">Our Way.</span>
           </motion.h1>
 
           <motion.p className="hero-subtitle" variants={fadeInUp}>

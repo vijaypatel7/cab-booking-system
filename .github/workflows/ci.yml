@@ -35,27 +35,63 @@ jobs:
         working-directory: client
         run: npm ci
 
-      - name: Build and Push Frontend
+      - name: Build Frontend Image
         uses: docker/build-push-action@v6
         with:
             context: .
             file: ./client/Dockerfile
-            push: true
-            tags: |
-                ${{ secrets.DOCKER_USERNAME }}/cab-booking-client:latest
-                ${{ secrets.DOCKER_USERNAME }}/cab-booking-client:${{ github.sha }}
+            load: true
+            tags: cab-booking-client:latest
+
+
+      - name: Scan Frontend Image
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+            image-ref: cab-booking-client:latest
+            format: table
+            exit-code: 1
+            ignore-unfixed: true
+            severity: HIGH,CRITICAL
+
+      - name: Tag FrontendImage
+        run: |
+            docker tag cab-booking-client:latest ${{ secrets.DOCKER_USERNAME }}/cab-booking-client:latest
+            docker tag cab-booking-client:latest ${{ secrets.DOCKER_USERNAME }}/cab-booking-client:${{ github.sha }}    
+
+      - name: Push Images
+        run: |
+            docker push ${{ secrets.DOCKER_USERNAME }}/cab-booking-client:latest
+            docker push ${{ secrets.DOCKER_USERNAME }}/cab-booking-client:${{ github.sha }}
 
 
       - name: Install Backend Dependencies
         working-directory: server
         run: npm ci
 
-      - name: Build and Push Backend
+
+      - name: Build Backend Image
         uses: docker/build-push-action@v6
         with:
             context: ./server
-            push: true
-            tags: |
-                ${{ secrets.DOCKER_USERNAME }}/cab-booking-server:latest
-                ${{ secrets.DOCKER_USERNAME }}/cab-booking-server:${{ github.sha }}
+            load: true
+            tags: cab-booking-server:latest
+
+      - name: Scan Backend Image
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+            image-ref: cab-booking-server:latest
+            format: table
+            exit-code: 1
+            ignore-unfixed: true
+            severity: HIGH,CRITICAL
+
+      - name: Tag Backend Image
+        run: |
+            docker tag cab-booking-server:latest ${{ secrets.DOCKER_USERNAME }}/cab-booking-server:latest
+            docker tag cab-booking-server:latest ${{ secrets.DOCKER_USERNAME }}/cab-booking-server:${{ github.sha }}
+        
+      - name: Push Backend Images
+        run: |
+            docker push ${{ secrets.DOCKER_USERNAME }}/cab-booking-server:latest
+            docker push ${{ secrets.DOCKER_USERNAME }}/cab-booking-server:${{ github.sha }}
 

@@ -21,6 +21,7 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
 
           script: |
+            set -e
             cd ~/cab-booking-system
 
             git pull origin main
@@ -32,10 +33,10 @@ jobs:
             BACKEND_CONTAINER_NAME=cab-booking-server
             FRONTEND_CONTAINER_NAME=cab-booking-client
 
-            BACKEND_HOST_PORT=5005
             BACKEND_PORT=5005
+            BACKEND_HOST_PORT=5005
 
-            FRONTEND_HOST_PORT=80
+            FRONTEND_HOST_PORT=5173
             FRONTEND_PORT=80
 
             NODE_ENV=production
@@ -50,9 +51,9 @@ jobs:
               -u "${{ secrets.DOCKER_USERNAME }}" \
               --password-stdin
 
-            docker compose -f docker-compose.prod.yml pull
+            docker-compose -f docker-compose.prod.yml pull
 
-            docker compose -f docker-compose.prod.yml up -d --remove-orphans
+            docker-compose -f docker-compose.prod.yml up -d --remove-orphans
 
             docker image prune -f
 

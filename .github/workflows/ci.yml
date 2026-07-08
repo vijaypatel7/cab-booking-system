@@ -45,7 +45,7 @@ jobs:
 
 
       - name: Scan Frontend Image
-        uses: aquasecurity/trivy-action@0.36.0
+        uses: aquasecurity/trivy-action@v0.36.0
         with:
             image-ref: cab-booking-client:latest
             format: table
@@ -77,7 +77,7 @@ jobs:
             tags: cab-booking-server:latest
 
       - name: Scan Backend Image
-        uses: aquasecurity/trivy-action@0.36.0
+        uses: aquasecurity/trivy-action@v0.36.0
         with:
             image-ref: cab-booking-server:latest
             format: table

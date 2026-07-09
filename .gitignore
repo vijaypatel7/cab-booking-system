@@ -31,3 +31,6 @@ server/uploads/
 
 # Runtime files
 *.pid
+
+# Kubernetes Secrets
+*kubeconfig*

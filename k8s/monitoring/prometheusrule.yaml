@@ -1,0 +1,41 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+
+metadata:
+  name: cab-booking-rules
+  namespace: monitoring
+  labels:
+    release: monitoring
+
+spec:
+  groups:
+    - name: cab-booking.rules
+
+      rules:
+        - alert: HighCPUUsage
+
+          expr: |
+            sum(rate(container_cpu_usage_seconds_total{namespace="cab-booking"}[5m])) > 0.8
+
+          for: 2m
+
+          labels:
+            severity: warning
+
+          annotations:
+            summary: High CPU Usage
+            description: CPU usage is above 80%.
+
+        - alert: PodRestarting
+
+          expr: |
+            increase(kube_pod_container_status_restarts_total{namespace="cab-booking"}[10m]) > 2
+
+          for: 5m
+
+          labels:
+            severity: critical
+
+          annotations:
+            summary: Pod restarting
+            description: One of the pods is restarting frequently.

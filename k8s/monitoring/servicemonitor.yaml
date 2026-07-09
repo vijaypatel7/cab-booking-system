@@ -1,0 +1,23 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+
+metadata:
+  name: server-servicemonitor
+  namespace: cab-booking
+  labels:
+    app: server
+
+spec:
+  selector:
+    matchLabels:
+      app: server
+
+  namespaceSelector:
+    matchNames:
+      - cab-booking
+
+  endpoints:
+    - port: http
+      path: /metrics
+      interval: 30s
+      scrapeTimeout: 10s

@@ -1,0 +1,52 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+
+metadata:
+  name: client-network-policy
+  namespace: cab-booking
+
+spec:
+  podSelector:
+    matchLabels:
+      app: client
+
+  policyTypes:
+    - Ingress
+    - Egress
+
+  ingress:
+    # Allow traffic only from the NGINX Ingress Controller
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: ingress-nginx
+
+          podSelector:
+            matchLabels:
+              app.kubernetes.io/name: ingress-nginx
+
+      ports:
+        - protocol: TCP
+          port: 80
+
+  egress:
+    # Allow client Pods to communicate with the server Service
+    - to:
+        - podSelector:
+            matchLabels:
+              app: server
+
+      ports:
+        - protocol: TCP
+          port: 5005
+
+    # Allow DNS lookups
+    - to:
+        - namespaceSelector: {}
+
+      ports:
+        - protocol: UDP
+          port: 53
+
+        - protocol: TCP
+          port: 53

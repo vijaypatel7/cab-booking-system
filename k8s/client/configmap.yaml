@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+
+metadata:
+  name: client-config
+  namespace: cab-booking
+
+data:
+  APP_NAME: "RideNow"
+  COMPANY_NAME: "Cab Booking"
+  DEFAULT_LANGUAGE: "en"
+  ENABLE_ANALYTICS: "false"

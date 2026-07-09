@@ -1,0 +1,45 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+
+metadata:
+  name: server-network-policy
+  namespace: cab-booking
+
+spec:
+  podSelector:
+    matchLabels:
+      app: server
+
+  policyTypes:
+    - Ingress
+    - Egress
+
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app: client
+
+      ports:
+        - protocol: TCP
+          port: 5005
+
+  egress:
+    - to:
+        - ipBlock:
+            cidr: 0.0.0.0/0
+
+      ports:
+        - protocol: TCP
+          port: 443
+
+    - to:
+        - ipBlock:
+            cidr: 0.0.0.0/0
+
+      ports:
+        - protocol: TCP
+          port: 53
+          # DNS over UDP
+        - protocol: UDP
+          port: 53

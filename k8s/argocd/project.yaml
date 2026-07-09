@@ -15,6 +15,9 @@ spec:
     - namespace: cab-booking
       server: https://kubernetes.default.svc
 
+    - namespace: monitoring
+      server: https://kubernetes.default.svc
+      
   clusterResourceWhitelist:
     - group: "*"
       kind: "*"

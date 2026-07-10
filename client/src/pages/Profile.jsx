@@ -36,19 +36,25 @@ const Profile = () => {
   });
 
   // Fetch user stats on mount
+  // Prevent overlapping fetches
+  const [fetching, setFetching] = useState(false);
   useEffect(() => {
-    const fetchStats = async () => {
-      setLoadingStats(true);
-      try {
-        const res = await userApi.getStats();
-        setStats(res.data.data);
-      } catch {
-        setStats(null);
-      } finally {
-        setLoadingStats(false);
-      }
-    };
-    fetchStats();
+    if (!fetching) {
+      setFetching(true);
+      const fetchStats = async () => {
+        setLoadingStats(true);
+        try {
+          const res = await userApi.getStats();
+          setStats(res.data.data);
+        } catch {
+          setStats(null);
+        } finally {
+          setLoadingStats(false);
+          setFetching(false);
+        }
+      };
+      fetchStats();
+    }
   }, []);
 
   const handleChange = (e) => {

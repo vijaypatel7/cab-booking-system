@@ -23,32 +23,38 @@ const Dashboard = () => {
   const [recentRides, setRecentRides] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // Prevent overlapping fetches
+  const [fetching, setFetching] = useState(false);
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [statsRes, ridesRes] = await Promise.all([
-          userApi.getStats(),
-          rideApi.getRides({ limit: 5 }),
-        ]);
-        setStats(statsRes.data.data);
-        setRecentRides(ridesRes.data.data.rides || []);
-      } catch (err) {
-        // Show optimistic/placeholder data on error
-        setStats({
-          totalRides: 0,
-          completedRides: 0,
-          cancelledRides: 0,
-          totalSpent: 0,
-        });
-        setRecentRides([]);
-        if (err.response?.status !== 401) {
-          toast.error('Could not load dashboard data');
+    if (!fetching) {
+      setFetching(true);
+      const fetchData = async () => {
+        try {
+          const [statsRes, ridesRes] = await Promise.all([
+            userApi.getStats(),
+            rideApi.getRides({ limit: 5 }),
+          ]);
+          setStats(statsRes.data.data);
+          setRecentRides(ridesRes.data.data.rides || []);
+        } catch (err) {
+          // Show optimistic/placeholder data on error
+          setStats({
+            totalRides: 0,
+            completedRides: 0,
+            cancelledRides: 0,
+            totalSpent: 0,
+          });
+          setRecentRides([]);
+          if (err.response?.status !== 401) {
+            toast.error('Could not load dashboard data');
+          }
+        } finally {
+          setLoading(false);
+          setFetching(false);
         }
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
+      };
+      fetchData();
+    }
   }, []);
 
   if (loading) {

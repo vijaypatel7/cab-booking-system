@@ -65,8 +65,20 @@ const AdminDashboard = () => {
     }
   }, []);
 
-  useEffect(() => { fetchStats(); }, [fetchStats, lastRefresh]);
-  useEffect(() => { if (activeTab === 'overview') fetchStats(); }, [activeTab, fetchStats]);
+  // Prevent overlapping fetches
+  const [fetching, setFetching] = useState(false);
+  useEffect(() => {
+    if (!fetching) {
+      setFetching(true);
+      fetchStats().finally(() => setFetching(false));
+    }
+  }, [fetchStats, lastRefresh]);
+  useEffect(() => {
+    if (activeTab === 'overview' && !fetching) {
+      setFetching(true);
+      fetchStats().finally(() => setFetching(false));
+    }
+  }, [activeTab, fetchStats]);
 
   if (loading) return <Loader size="lg" text="Loading admin dashboard..." />;
   if (!stats) return <div className="admin-error">Failed to load data</div>;

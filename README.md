@@ -140,6 +140,23 @@ npm run dev
 
 Vite proxies `/api` requests to the backend.
 
+# GitHub Actions Secrets
+
+Configure the following in:
+
+**GitHub → Settings → Secrets and variables → Actions → Secrets**
+
+| Secret Name |
+ DOCKER_USERNAME (in Secrets)
+ DOCKER_PASSWORD (in Varibales)
+ EC2_HOST (in Secrets)
+ EC2_USER (in Secrets)
+ EC2_SSH_KEY (in Secrets)
+ MONGO_URI (in Secrets)
+ JWT_SECRET (in Secrets)
+
+---
+
 ## Docker
 
 Build and start everything:
@@ -177,16 +194,16 @@ Create a root `.env` from `.env.example` and change all the values with actual v
 
 # Setup Minikube CLuster
 
-# Install Minikube 
+## Install Minikube 
 ``` bash
 brew install minikube
 ```
 
-# Start Minikube
+## Start Minikube
 ``` bash
 minikube start
 ```
-# Verify cluster
+## Verify cluster
 
 ``` bash
 kubectl cluster-info
@@ -194,17 +211,24 @@ kubectl cluster-info
 kubectl get nodes
 ```
 
-# Enable Metrics Server
+## Enable Metrics Server
 ``` bash
 minikube addons enable metrics-server
 ```
 
-# Enable Ingress
+## Enable Ingress
 ``` bash
 minikube addons enable ingress
 ```
 
-# Verify
+## Install the Kubernetes CLI (kubectl)
+``` bash
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+chmod +x kubectl
+sudo mv kubectl /usr/local/bin/
+``` 
+
+## Verify
 ``` bash
 kubectl get pods -n ingress-nginx
 kubectl get pods -n kube-system

@@ -1,9 +1,13 @@
+# Application 1 — Your existing cab-booking app (unchanged)
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 
 metadata:
   name: cab-booking
   namespace: argocd
+  labels:
+    app: cab-booking
+    component: application
 
 spec:
   project: cab-booking-project
@@ -17,6 +21,42 @@ spec:
     server: https://kubernetes.default.svc
     namespace: cab-booking
 
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+
+    syncOptions:
+      - CreateNamespace=true
+      - PrunePropagationPolicy=foreground
+      - PruneLast=true
+
+---
+# Application 2 — NEW monitoring app
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+
+metadata:
+  name: cab-booking-monitoring
+  namespace: argocd
+  labels:
+    app: cab-booking
+    component: monitoring
+  annotations:
+    # deploys AFTER cab-booking app is healthy
+    argocd.argoproj.io/sync-wave: "1"
+
+spec:
+  project: cab-booking-project
+
+  source:
+    repoURL: https://github.com/vijaypatel7/cab-booking-system.git
+    targetRevision: main
+    path: monitoring                  # ← points to your monitoring folder
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: monitoring            
   syncPolicy:
     automated:
       prune: true

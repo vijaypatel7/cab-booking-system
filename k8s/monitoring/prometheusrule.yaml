@@ -6,36 +6,355 @@ metadata:
   namespace: monitoring
   labels:
     release: monitoring
+    app: cab-booking
+    app.kubernetes.io/name: cab-booking
+    app.kubernetes.io/component: alerting
 
 spec:
   groups:
-    - name: cab-booking.rules
 
+    # ─────────────────────────────────────────────
+    # HTTP Traffic Alerts
+    # ─────────────────────────────────────────────
+    - name: cab-booking.http
+      interval: 30s
       rules:
-        - alert: HighCPUUsage
 
+        - alert: CabBookingHighErrorRate
           expr: |
-            sum(rate(container_cpu_usage_seconds_total{namespace="cab-booking"}[5m])) > 0.8
-
-          for: 2m
-
-          labels:
-            severity: warning
-
-          annotations:
-            summary: High CPU Usage
-            description: CPU usage is above 80%.
-
-        - alert: PodRestarting
-
-          expr: |
-            increase(kube_pod_container_status_restarts_total{namespace="cab-booking"}[10m]) > 2
-
+            (
+              sum(rate(http_requests_total{namespace="cab-booking", status=~"5.."}[5m]))
+              /
+              sum(rate(http_requests_total{namespace="cab-booking"}[5m]))
+            ) > 0.05
           for: 5m
-
           labels:
             severity: critical
-
+            service: cab-booking
+            team: backend
           annotations:
-            summary: Pod restarting
-            description: One of the pods is restarting frequently.
+            summary: "Cab Booking — High 5xx Error Rate"
+            description: |
+              Error rate is {{ $value | humanizePercentage }}
+              which exceeds the 5% critical threshold.
+              Investigate logs immediately.
+
+        - alert: CabBookingHighP99Latency
+          expr: |
+            histogram_quantile(0.99,
+              sum(rate(http_request_duration_seconds_bucket{namespace="cab-booking"}[5m]))
+              by (le)
+            ) > 1
+          for: 5m
+          labels:
+            severity: warning
+            service: cab-booking
+            team: backend
+          annotations:
+            summary: "Cab Booking — P99 Latency > 1s"
+            description: |
+              P99 response time is {{ $value | humanizeDuration }}.
+              SLO threshold is 1 second.
+
+        - alert: CabBookingCriticalP99Latency
+          expr: |
+            histogram_quantile(0.99,
+              sum(rate(http_request_duration_seconds_bucket{namespace="cab-booking"}[5m]))
+              by (le)
+            ) > 5
+          for: 2m
+          labels:
+            severity: critical
+            service: cab-booking
+            team: backend
+          annotations:
+            summary: "Cab Booking — P99 Latency CRITICAL (>5s)"
+            description: |
+              P99 response time is {{ $value | humanizeDuration }}.
+              Far exceeding SLO. Immediate action required.
+
+        - alert: CabBookingNoTraffic
+          expr: |
+            sum(rate(http_requests_total{namespace="cab-booking"}[5m])) == 0
+          for: 5m
+          labels:
+            severity: warning
+            service: cab-booking
+            team: backend
+          annotations:
+            summary: "Cab Booking — No traffic received"
+            description: |
+              No HTTP requests received in the last 5 minutes.
+              Service may be down or misconfigured.
+
+    # ─────────────────────────────────────────────
+    # Node.js Runtime Alerts
+    # ─────────────────────────────────────────────
+    - name: cab-booking.nodejs
+      interval: 30s
+      rules:
+
+        - alert: CabBookingEventLoopLagHigh
+          expr: |
+            cab_booking_nodejs_eventloop_lag_p99_seconds{namespace="cab-booking"} > 0.5
+          for: 5m
+          labels:
+            severity: warning
+            service: cab-booking
+            team: backend
+          annotations:
+            summary: "Cab Booking — Event Loop Lag High"
+            description: |
+              Event loop P99 lag is {{ $value | humanizeDuration }}
+              on pod {{ $labels.pod }}.
+              Application may be CPU-bound or blocking I/O.
+
+        - alert: CabBookingEventLoopLagCritical
+          expr: |
+            cab_booking_nodejs_eventloop_lag_p99_seconds{namespace="cab-booking"} > 2
+          for: 2m
+          labels:
+            severity: critical
+            service: cab-booking
+            team: backend
+          annotations:
+            summary: "Cab Booking — Event Loop Lag CRITICAL (>2s)"
+            description: |
+              Event loop P99 lag is {{ $value | humanizeDuration }}
+              on pod {{ $labels.pod }}.
+              Service is severely degraded.
+
+        - alert: CabBookingHeapUsageHigh
+          expr: |
+            (
+              cab_booking_nodejs_heap_size_used_bytes{namespace="cab-booking"}
+              /
+              cab_booking_nodejs_heap_size_total_bytes{namespace="cab-booking"}
+            ) > 0.85
+          for: 5m
+          labels:
+            severity: warning
+            service: cab-booking
+            team: backend
+          annotations:
+            summary: "Cab Booking — Heap Usage > 85%"
+            description: |
+              Heap usage is {{ $value | humanizePercentage }}
+              on pod {{ $labels.pod }}.
+              Possible memory leak. Review heap dumps.
+
+        - alert: CabBookingHeapUsageCritical
+          expr: |
+            (
+              cab_booking_nodejs_heap_size_used_bytes{namespace="cab-booking"}
+              /
+              cab_booking_nodejs_heap_size_total_bytes{namespace="cab-booking"}
+            ) > 0.95
+          for: 2m
+          labels:
+            severity: critical
+            service: cab-booking
+            team: backend
+          annotations:
+            summary: "Cab Booking — Heap Usage CRITICAL (>95%)"
+            description: |
+              Heap usage is {{ $value | humanizePercentage }}
+              on pod {{ $labels.pod }}.
+              OOM crash is imminent. Scale or restart pod.
+
+        - alert: CabBookingHighGCRate
+          expr: |
+            rate(cab_booking_nodejs_gc_duration_seconds_count{namespace="cab-booking"}[5m]) > 10
+          for: 5m
+          labels:
+            severity: warning
+            service: cab-booking
+            team: backend
+          annotations:
+            summary: "Cab Booking — GC running too frequently"
+            description: |
+              GC is running {{ $value | humanize }} times/second
+              on pod {{ $labels.pod }}. Heap pressure is high.
+
+        - alert: CabBookingFileDescriptorsHigh
+          expr: |
+            (
+              cab_booking_process_open_fds{namespace="cab-booking"}
+              /
+              cab_booking_process_max_fds{namespace="cab-booking"}
+            ) > 0.8
+          for: 5m
+          labels:
+            severity: warning
+            service: cab-booking
+            team: backend
+          annotations:
+            summary: "Cab Booking — File Descriptors > 80%"
+            description: |
+              FD usage is {{ $value | humanizePercentage }}
+              on pod {{ $labels.pod }}.
+              Risk of connection failures if limit is reached.
+
+    # ─────────────────────────────────────────────
+    # Kubernetes / Infrastructure Alerts
+    # ─────────────────────────────────────────────
+    - name: cab-booking.kubernetes
+      interval: 30s
+      rules:
+
+        - alert: CabBookingHighCPUUsage
+          expr: |
+            sum(
+              rate(container_cpu_usage_seconds_total{
+                namespace="cab-booking",
+                container!="",
+                container!="POD"
+              }[5m])
+            ) by (pod) > 0.8
+          for: 2m
+          labels:
+            severity: warning
+            service: cab-booking
+            team: backend
+          annotations:
+            summary: "Cab Booking — High CPU Usage on {{ $labels.pod }}"
+            description: |
+              CPU usage is {{ $value | humanizePercentage }}
+              on pod {{ $labels.pod }}.
+              Above 80% threshold for 2 minutes.
+
+        - alert: CabBookingHighMemoryUsage
+          expr: |
+            (
+              sum(container_memory_working_set_bytes{
+                namespace="cab-booking",
+                container!="",
+                container!="POD"
+              }) by (pod)
+              /
+              sum(kube_pod_container_resource_limits{
+                namespace="cab-booking",
+                resource="memory"
+              }) by (pod)
+            ) > 0.9
+          for: 5m
+          labels:
+            severity: critical
+            service: cab-booking
+            team: backend
+          annotations:
+            summary: "Cab Booking — Memory usage > 90% of limit"
+            description: |
+              Pod {{ $labels.pod }} is using
+              {{ $value | humanizePercentage }} of its memory limit.
+              OOM kill risk.
+
+        - alert: CabBookingPodRestarting
+          expr: |
+            increase(
+              kube_pod_container_status_restarts_total{namespace="cab-booking"}[10m]
+            ) > 2
+          for: 5m
+          labels:
+            severity: critical
+            service: cab-booking
+            team: backend
+          annotations:
+            summary: "Cab Booking — Pod {{ $labels.pod }} restarting frequently"
+            description: |
+              Pod {{ $labels.pod }} container {{ $labels.container }}
+              has restarted {{ $value }} times in the last 10 minutes.
+
+        - alert: CabBookingPodNotReady
+          expr: |
+            kube_pod_status_ready{
+              namespace="cab-booking",
+              condition="true"
+            } == 0
+          for: 2m
+          labels:
+            severity: critical
+            service: cab-booking
+            team: backend
+          annotations:
+            summary: "Cab Booking — Pod {{ $labels.pod }} Not Ready"
+            description: |
+              Pod {{ $labels.pod }} has been in a not-ready state
+              for more than 2 minutes.
+
+        - alert: CabBookingServiceDown
+          expr: |
+            up{namespace="cab-booking"} == 0
+          for: 1m
+          labels:
+            severity: critical
+            service: cab-booking
+            team: backend
+          annotations:
+            summary: "Cab Booking — Service scrape target DOWN"
+            description: |
+              Prometheus cannot scrape metrics from
+              instance {{ $labels.instance }}.
+              Service may be completely down.
+
+    # ─────────────────────────────────────────────
+    # SLO Recording Rules (used by dashboard)
+    # ─────────────────────────────────────────────
+    - name: cab-booking.slo.recording
+      interval: 30s
+      rules:
+
+        # Total request rate — used in multiple panels
+        - record: cab_booking:http_request_rate5m
+          expr: |
+            sum(rate(http_requests_total{namespace="cab-booking"}[5m]))
+              by (pod, route, method, status)
+
+        # Error rate — used in error rate panels
+        - record: cab_booking:http_error_rate5m
+          expr: |
+            sum(rate(http_requests_total{namespace="cab-booking", status=~"5.."}[5m]))
+            /
+            sum(rate(http_requests_total{namespace="cab-booking"}[5m]))
+
+        # P50 latency — used in latency panels
+        - record: cab_booking:http_latency_p50
+          expr: |
+            histogram_quantile(0.50,
+              sum(rate(http_request_duration_seconds_bucket{namespace="cab-booking"}[5m]))
+              by (le)
+            )
+
+        # P95 latency — used in latency panels
+        - record: cab_booking:http_latency_p95
+          expr: |
+            histogram_quantile(0.95,
+              sum(rate(http_request_duration_seconds_bucket{namespace="cab-booking"}[5m]))
+              by (le)
+            )
+
+        # P99 latency — used in latency panels + alerts
+        - record: cab_booking:http_latency_p99
+          expr: |
+            histogram_quantile(0.99,
+              sum(rate(http_request_duration_seconds_bucket{namespace="cab-booking"}[5m]))
+              by (le)
+            )
+
+        # Heap usage ratio — used in heap panels
+        - record: cab_booking:nodejs_heap_usage_ratio
+          expr: |
+            cab_booking_nodejs_heap_size_used_bytes{namespace="cab-booking"}
+            /
+            cab_booking_nodejs_heap_size_total_bytes{namespace="cab-booking"}
+
+        # CPU usage per pod — used in CPU panels
+        - record: cab_booking:container_cpu_usage_rate5m
+          expr: |
+            sum(
+              rate(container_cpu_usage_seconds_total{
+                namespace="cab-booking",
+                container!="",
+                container!="POD"
+              }[5m])
+            ) by (pod)

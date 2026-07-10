@@ -1,5 +1,9 @@
 const dotenv = require('dotenv');
 const path = require('path');
+const {
+  register,
+  metricsMiddleware,
+} = require("./config/prometheus");
 
 // Load env vars
 dotenv.config({

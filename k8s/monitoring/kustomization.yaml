@@ -5,3 +5,13 @@ resources:
   - servicemonitor.yaml
   - prometheusrule.yaml
   - grafana-dashboard-configmap.yaml
+
+# Apply common labels to every resource
+commonLabels:
+  app.kubernetes.io/part-of: cab-booking
+  app.kubernetes.io/managed-by: kustomize
+
+# Apply common annotations
+commonAnnotations:
+  monitoring.cab-booking/version: "1.0.0"
+  monitoring.cab-booking/team: "backend"

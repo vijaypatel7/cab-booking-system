@@ -7,6 +7,8 @@ metadata:
   labels:
     release: monitoring
     app: server
+    app.kubernetes.io/name: cab-booking
+    app.kubernetes.io/component: monitoring
 
 spec:
   selector:
@@ -22,3 +24,20 @@ spec:
       path: /metrics
       interval: 30s
       scrapeTimeout: 10s
+
+      # Relabel to add useful labels for dashboard filtering
+      relabelings:
+        - sourceLabels: [__meta_kubernetes_pod_name]
+          targetLabel: pod
+        - sourceLabels: [__meta_kubernetes_namespace]
+          targetLabel: namespace
+        - sourceLabels: [__meta_kubernetes_pod_node_name]
+          targetLabel: node
+        - sourceLabels: [__meta_kubernetes_service_name]
+          targetLabel: service
+
+      # Metric relabeling - drop high cardinality metrics we don't need
+      metricRelabelings:
+        - sourceLabels: [__name__]
+          regex: "go_gc_heap_allocs_by_size_bytes.*|go_gc_heap_frees_by_size_bytes.*|go_gc_pauses_seconds.*"
+          action: drop

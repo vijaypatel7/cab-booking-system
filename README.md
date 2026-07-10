@@ -226,14 +226,7 @@ minikube addons enable ingress
 curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
 chmod +x kubectl
 sudo mv kubectl /usr/local/bin/
-``` 
-
-## Verify
-``` bash
-kubectl get pods -n ingress-nginx
-kubectl get pods -n kube-system
 ```
-
 
 # Kubernetes Deployment
 
@@ -280,6 +273,12 @@ kubectl get secret -n cab-booking
 ---
 
 # Verify Resources
+
+## Verify Pods
+``` bash
+kubectl get pods -n ingress-nginx
+kubectl get pods -n kube-system
+```
 
 ```bash
 kubectl get all -n cab-booking

@@ -274,21 +274,125 @@ kubectl get secret -n cab-booking
 
 # Verify Resources
 
-## Verify Pods
 ``` bash
-kubectl get pods -n ingress-nginx
-kubectl get pods -n kube-system
-```
-
-```bash
+kubectl get pods -n kube-system (cluster)
 kubectl get all -n cab-booking
 kubectl get ingress -n cab-booking
+kubectl get pods -n ingress-nginx
 kubectl get hpa -n cab-booking
 kubectl get networkpolicy -n cab-booking
 kubectl get pdb -n cab-booking
 ```
 
 ---
+
+# Viewing and Monitoring the Cab Booking Application
+
+## 1. Check if everything is running
+
+``` bash
+kubectl get all -n cab-booking
+kubectl get pods -n cab-booking
+kubectl get pods -n cab-booking -w (Watch Live Pod activity)
+```
+
+## 2. Check Ingress
+
+``` bash
+kubectl get ingress -n cab-booking
+kubectl describe ingress cab-booking-ingress -n cab-booking
+```
+
+## 3. Access the Website
+
+### macOS (Docker Driver)
+
+``` bash
+minikube service ingress-nginx-controller -n ingress-nginx --url
+```
+
+Open the **first** URL and keep the terminal running.
+
+### Linux / WSL / VM Drivers
+
+``` bash
+minikube ip
+kubectl get ingress -n cab-booking
+```
+
+Browse to `http://<MINIKUBE_IP>`.
+
+## 4. Check Backend Health
+
+``` bash
+curl http://localhost:56363/api/health
+```
+
+## 5. View Server Logs
+
+``` bash
+kubectl logs -f deployment/server-deployment -n cab-booking
+```
+
+## 6. View Client Logs
+
+``` bash
+kubectl logs -f deployment/client-deployment -n cab-booking
+```
+
+## 7. Execute Commands Inside Pods
+
+``` bash
+kubectl exec -it deployment/server-deployment -n cab-booking -- sh
+kubectl exec -it deployment/client-deployment -n cab-booking -- sh
+```
+
+## 8. CPU & Memory
+
+``` bash
+kubectl top pods -n cab-booking
+kubectl top nodes
+```
+
+## 9. Watch Resources
+
+``` bash
+watch kubectl get pods -n cab-booking
+```
+
+macOS:
+
+``` bash
+brew install watch
+```
+
+## 10. Restart Deployments
+
+``` bash
+kubectl rollout restart deployment/server-deployment -n cab-booking
+kubectl rollout restart deployment/client-deployment -n cab-booking
+kubectl rollout restart deployment -n cab-booking
+```
+
+## 11. Rollout Status
+
+``` bash
+kubectl rollout status deployment/server-deployment -n cab-booking
+kubectl rollout status deployment/client-deployment -n cab-booking
+```
+
+## 12. Port Forward
+
+``` bash
+kubectl port-forward svc/server -n cab-booking 5005:5005
+kubectl port-forward svc/client -n cab-booking 8080:80
+```
+
+Client: http://localhost:8080
+
+Server: http://localhost:5005/api/health
+
+
 
 # Argo CD
 

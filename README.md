@@ -1,22 +1,24 @@
 # 🚕 RideNow --- Cab Booking App
 
-A full-stack cab booking application built with **React (Vite)**,
-**Node.js + Express**, **MongoDB Atlas**, **Docker**, and **Docker
-Compose**.
+production-style full-stack cab booking application built with **React (Vite)**, **Node.js/Express**, **MongoDB Atlas**, **Docker**, **Kubernetes (Kustomize)**, **NGINX Ingress**, **Argo CD (GitOps)** and **Prometheus/Grafana**.
 
-## Features
+# Features
 
--   JWT Authentication
--   User/Admin roles
--   Cab booking workflow
--   Ride history
--   Admin dashboard
--   Responsive React UI
--   REST APIs with Express
--   MongoDB Atlas integration
--   Dockerized frontend (Nginx) and backend
--   Docker Compose support
--   Ready for GitHub Actions CI/CD
+- JWT Authentication
+- User/Admin roles
+- Cab booking workflow
+- Ride history
+- Responsive React UI
+- REST APIs
+- MongoDB Atlas
+- Dockerized client/server
+- Kubernetes manifests with Kustomize
+- Argo CD GitOps deployment
+- Horizontal Pod Autoscaler (HPA)
+- PodDisruptionBudget (PDB)
+- Network Policies
+- Prometheus ServiceMonitor & PrometheusRule
+- Grafana dashboard ConfigMap
 
 ## Architecture
 
@@ -34,6 +36,9 @@ Express API (Backend Container)
          │
          ▼
 MongoDB Atlas
+Prometheus ---> Metrics
+Grafana ------> Dashboards
+Argo CD ------> GitHub Repository
 ```
 
 ## Tech Stack
@@ -169,6 +174,42 @@ The compose setup includes:
 Create a root `.env` from `.env.example` and change all the values with actual values
 
 ---
+
+# Setup Minikube CLuster
+
+# Install Minikube 
+``` bash
+brew install minikube
+```
+
+# Start Minikube
+``` bash
+minikube start
+```
+# Verify cluster
+
+``` bash
+kubectl cluster-info
+
+kubectl get nodes
+```
+
+# Enable Metrics Server
+``` bash
+minikube addons enable metrics-server
+```
+
+# Enable Ingress
+``` bash
+minikube addons enable ingress
+```
+
+# Verify
+``` bash
+kubectl get pods -n ingress-nginx
+kubectl get pods -n kube-system
+```
+
 
 # Kubernetes Deployment
 
@@ -317,6 +358,48 @@ Pods Updated
 ```
 
 ---
+
+# Useful Kubenrates Commands
+
+```
+kubectl get all -A
+
+kubectl get pods -A
+
+kubectl get svc -A
+
+kubectl get ingress -A
+
+kubectl top pods -A
+
+kubectl top nodes
+
+kubectl logs deployment/server-deployment -n cab-booking
+
+kubectl describe pod <pod-name> -n cab-booking
+
+kubectl rollout restart deployment/server-deployment -n cab-booking
+
+kubectl delete -k k8s
+
+kubectl apply -k k8s
+```
+---
+
+# ArgoCD Commands
+
+```
+kubectl apply -f k8s/argocd/project.yaml
+
+kubectl apply -f k8s/argocd/application.yaml
+
+kubectl get applications -n argocd
+
+kubectl describe application cab-booking -n argocd
+
+```
+
+
 
 # Troubleshooting
 

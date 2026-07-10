@@ -5,6 +5,7 @@ metadata:
   name: server-servicemonitor
   namespace: cab-booking
   labels:
+    release: monitoring
     app: server
 
 spec:

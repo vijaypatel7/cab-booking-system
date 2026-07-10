@@ -4,7 +4,10 @@ const cookieParser = require('cookie-parser');
 const morgan = require('morgan');
 const path = require('path');
 const { errorHandler, notFound } = require('./middleware/errorMiddleware');
-
+const {
+  register,
+  metricsMiddleware,
+} = require('./config/prometheus');
 const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
 const rideRoutes = require('./routes/rideRoutes');
@@ -20,6 +23,7 @@ app.use(cors({
   credentials: true,
 }));
 app.use(express.json());
+app.use(metricsMiddleware);
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
@@ -42,6 +46,10 @@ app.get('/api/health', (req, res) => {
   res.json({ success: true, message: '🚕 Cab Booking API is running!' });
 });
 
+app.get('/metrics', async (req, res) => {
+  res.set('Content-Type', register.contentType);
+  res.end(await register.metrics());
+});
 // Error handling
 app.use(notFound);
 app.use(errorHandler);

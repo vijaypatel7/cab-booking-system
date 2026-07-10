@@ -4,6 +4,8 @@ kind: Service
 metadata:
   name: server
   namespace: cab-booking
+  labels:
+    app: server
 
 spec:
   type: ClusterIP

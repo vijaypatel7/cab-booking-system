@@ -2,11 +2,13 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 
 metadata:
-  name: cab-booking
+  name: cab-booking-monitoring
   namespace: argocd
   labels:
     app: cab-booking
-    component: application
+    component: monitoring
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
 
 spec:
   project: cab-booking-project
@@ -14,11 +16,11 @@ spec:
   source:
     repoURL: https://github.com/vijaypatel7/cab-booking-system.git
     targetRevision: main
-    path: k8s/app
+    path: k8s/monitoring
 
   destination:
     server: https://kubernetes.default.svc
-    namespace: cab-booking
+    namespace: monitoring
 
   syncPolicy:
     automated:

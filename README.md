@@ -74,43 +74,71 @@ cab-booking/
 │   └── workflows/
 │       ├── client.yml
 │       └── server.yml
-├── client/
-├── server/
+│
+├── client/                         # Angular Frontend
+│
+├── server/                         # Node.js Backend
+│
 ├── nginx/
 │   └── nginx.conf
+│
 ├── k8s/
-│   ├── client/
-│   │   ├── configmap.yaml
-│   │   ├── deployment.yaml
-│   │   ├── hpa.yaml
-│   │   ├── kustomization.yaml
-│   │   ├── networkpolicy.yaml
-│   │   ├── pdb.yaml
-│   │   └── service.yaml
-│   ├── server/
-│   │   ├── configmap.yaml
-│   │   ├── deployment.yaml
-│   │   ├── hpa.yaml
-│   │   ├── kustomization.yaml
-│   │   ├── networkpolicy.yaml
-│   │   ├── pdb.yaml
-│   │   └── service.yaml
-│   ├── ingress/
-│   │   ├── ingress.yaml
-│   │   └── kustomization.yaml
-│   ├── monitoring/
-│   │   ├── grafana-dashboard-configmap.yaml
-│   │   ├── prometheusrule.yaml
-│   │   ├── servicemonitor.yaml
-│   │   └── kustomization.yaml
-│   ├── security/
-│   │   ├── client-serviceaccount.yaml
-│   │   ├── server-serviceaccount.yaml
-│   │   └── kustomization.yaml
-│   ├── secrets/
-│   │   └── kustomization.yaml
 │   ├── namespace.yaml
-│   └── kustomization.yaml
+│   ├── kustomization.yaml
+│   │
+│   ├── app/                        # Main Cab Booking Application
+│   │   ├── client/
+│   │   │   ├── configmap.yaml
+│   │   │   ├── deployment.yaml
+│   │   │   ├── hpa.yaml
+│   │   │   ├── kustomization.yaml
+│   │   │   ├── networkpolicy.yaml
+│   │   │   ├── pdb.yaml
+│   │   │   └── service.yaml
+│   │   │
+│   │   ├── server/
+│   │   │   ├── configmap.yaml
+│   │   │   ├── deployment.yaml
+│   │   │   ├── hpa.yaml
+│   │   │   ├── kustomization.yaml
+│   │   │   ├── networkpolicy.yaml
+│   │   │   ├── pdb.yaml
+│   │   │   └── service.yaml
+│   │   │
+│   │   ├── ingress/
+│   │   │   ├── ingress.yaml
+│   │   │   └── kustomization.yaml
+│   │   │
+│   │   ├── security/
+│   │   │   ├── client-serviceaccount.yaml
+│   │   │   ├── server-serviceaccount.yaml
+│   │   │   └── kustomization.yaml
+│   │   │
+│   │   ├── secrets/
+│   │   │   └── kustomization.yaml
+│   │   │
+│   │   └── kustomization.yaml
+│   │
+│   ├── monitoring/                 # Observability Stack
+│   │   ├── dashboard/
+│   │   │   ├── grafana-dashboard-configmap.yaml
+│   │   │   └── kustomization.yaml
+│   │   │
+│   │   ├── rules/
+│   │   │   ├── prometheusrule.yaml
+│   │   │   └── kustomization.yaml
+│   │   │
+│   │   ├── servicemonitor/
+│   │   │   ├── servicemonitor.yaml
+│   │   │   └── kustomization.yaml
+│   │   │
+│   │   └── kustomization.yaml
+│   │
+│   └── argocd/
+│       ├── application.yaml
+│       ├── monitoring-application.yaml
+│       └── project.yaml
+│
 ├── docker-compose.yml
 ├── docker-compose-prod.yml
 ├── .env.example
@@ -401,8 +429,10 @@ Install:
 ```bash
 kubectl create namespace argocd
 
-kubectl apply -n argocd \
--f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+kubectl apply --server-side -n argocd \
+-f https://raw.githubusercontent.com/argoproj/argo-cd/v3.4.5/manifests/install.yaml
+
+kubectl get pods -n argocd
 ```
 
 Port-forward:

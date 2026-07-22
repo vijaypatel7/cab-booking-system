@@ -337,6 +337,7 @@ kubectl describe ingress cab-booking-ingress -n cab-booking
 
 ``` bash
 minikube service ingress-nginx-controller -n ingress-nginx --url
+minikube service client -n cab-booking --url
 ```
 
 Open the **first** URL and keep the terminal running.
@@ -452,6 +453,8 @@ Create app:
 
 ```bash
 kubectl apply -f argocd/application.yaml
+kubectl apply -f argocd/monitoring-application.yaml
+kubectl apply -f argocd/project.yaml
 ```
 
 Sync:
